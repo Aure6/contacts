@@ -77,26 +77,25 @@ def ouvrir_formulaire():
             messagebox.showwarning("Champs vides", "Veuillez remplir au moins un champ.")
             return
 
-        # if not nom:
-        #     nom = "Sans nom"
         if not image:
             image = "placeholder.jpg"
 
-        # Ajouter à la liste et trier
-        contacts.append({"name": nom, "image": image})
-        contacts.sort(key=lambda c: c["name"].lower())
+        try:
+            cm.ajouter_contact_moteur(nom, image)
+        except ValueError as e:
+            messagebox.showerror("Erreur", str(e))
+            return
 
-        # Effacer les anciens widgets dans scrollable_frame
+        # Rafraîchir l'affichage de la liste
         for widget in scrollable_frame.winfo_children():
             widget.destroy()
 
-        # Réafficher tous les contacts triés
-        for c in contacts:
+        for c in cm.contacts:
             afficher_contact(c["name"], c["image"])
 
         form.destroy()
 
-        sauvegarder_contacts()
+        cm.sauvegarder_contacts()
 
     submit_btn = tk.Button(form, text="Ajouter", bootstyle="success", command=ajouter_contact)
     submit_btn.pack(pady=10)
@@ -118,8 +117,8 @@ def charger_contacts():
             {"name": "Charlie", "image": "charlie.jpg"},
         ]
 
-charger_contacts()
-contacts.sort(key=lambda c: c["name"].lower())
+cm.charger_contacts()
+cm.contacts.sort(key=lambda c: c["name"].lower())
 
 ################
 # créer l'interface
@@ -152,7 +151,7 @@ scrollbar.pack(side="right", fill="y")
 # Charger les images et les afficher
 image_refs = []  # Pour éviter que les images soient supprimées par le garbage collector
 
-for contact in contacts:
+for contact in cm.contacts:
     afficher_contact(contact["name"], contact["image"])
 
 if __name__== "__main__":
