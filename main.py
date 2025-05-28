@@ -1,13 +1,100 @@
 import ttkbootstrap as tk
-# from tkinter import tk
 from PIL import Image, ImageTk, ImageDraw
+import tkinter.filedialog as fd
+from tkinter import messagebox
 
 # Créer la fenêtre principale
 root = tk.Window(
     title="Sample App",
     themename="cosmo",
-    size=(400, 600)
+    size=(600, 600)
 )
+
+def afficher_contact(nom, chemin_image):
+    try:
+        img = Image.open(chemin_image).convert("RGBA")
+        img = img.resize((50, 50), Image.LANCZOS)
+    except FileNotFoundError:
+        img = Image.open("placeholder.jpg").convert("RGBA")
+        img = img.resize((50, 50), Image.LANCZOS)
+
+    scale = 4
+    size = 50
+    high_res_mask = Image.new("L", (size*scale, size*scale), 0)
+    draw = ImageDraw.Draw(high_res_mask)
+    draw.ellipse((0, 0, size*scale, size*scale), fill=255)
+    mask = high_res_mask.resize((size, size), Image.LANCZOS)
+    img.putalpha(mask)
+
+    photo = ImageTk.PhotoImage(img)
+    image_refs.append(photo)
+
+    item_frame = tk.Frame(scrollable_frame, padding=10)
+    item_frame.pack(fill="x")
+
+    label_img = tk.Label(item_frame, image=photo)
+    label_img.pack(side="left")
+
+    label_name = tk.Label(item_frame, text=nom, font=("Helvetica", 14))
+    label_name.pack(side="left", padx=10)
+
+# Formulaire ajout contact
+def ouvrir_formulaire():
+    form = tk.Toplevel(root)
+    form.title("Ajouter un contact")
+    form.geometry("300x200")
+    form.resizable(False, False)
+
+    tk.Label(form, text="Nom :").pack(pady=(10, 0))
+    entry_nom = tk.Entry(form)
+    entry_nom.pack()
+
+    tk.Label(form, text="Image :").pack(pady=(10, 0))
+    entry_image = tk.Entry(form)
+    entry_image.pack()
+
+    def parcourir_image():
+        filepath = fd.askopenfilename(
+            title="Choisir une image",
+            filetypes=[("Images", "*.jpg *.png *.jpeg *.gif")]
+        )
+        if filepath:
+            entry_image.delete(0, "end")
+            entry_image.insert(0, filepath)
+
+    browse_btn = tk.Button(form, text="Parcourir...", command=parcourir_image)
+    browse_btn.pack(pady=(5, 10))
+
+    def ajouter_contact():
+        nom = entry_nom.get().strip()
+        image = entry_image.get().strip()
+
+        if not nom and not image:
+            print("Veuillez remplir au moins un champ.")
+            return
+
+        # Valeurs par défaut si un champ est vide
+        # if not nom:
+        #     nom = "Sans nom"
+        if not image:
+            image = "placeholder.jpg"  # Image par défaut
+
+        # Ajouter à la liste et trier
+        contacts.append({"name": nom, "image": image})
+        contacts.sort(key=lambda c: c["name"].lower())
+
+        # Effacer les anciens widgets dans scrollable_frame
+        for widget in scrollable_frame.winfo_children():
+            widget.destroy()
+
+        # Réafficher tous les contacts triés
+        for c in contacts:
+            afficher_contact(c["name"], c["image"])
+
+        form.destroy()
+
+    submit_btn = tk.Button(form, text="Ajouter", bootstyle="success", command=ajouter_contact)
+    submit_btn.pack(pady=10)
 
 # Exemple de contacts avec image et nom
 contacts = [
@@ -19,6 +106,10 @@ contacts = [
 # Conteneur principal
 frame = tk.Frame(root, padding=20)
 frame.pack(fill="both", expand=True)
+
+# Bouton "Add"
+add_button = tk.Button(frame, text="Ajouter un contact", bootstyle="success", command=ouvrir_formulaire)
+add_button.pack(pady=(0, 10))
 
 # Créer un canvas pour pouvoir scroller la liste
 canvas = tk.Canvas(frame)
@@ -41,39 +132,8 @@ scrollbar.pack(side="right", fill="y")
 # Charger les images et les afficher
 image_refs = []  # Pour éviter que les images soient supprimées par le garbage collector
 
-contacts.sort(key=lambda c: c["name"].lower())
-
 for contact in contacts:
-    try:
-        img = Image.open(contact["image"]).convert("RGBA")
-        img = img.resize((50, 50), Image.LANCZOS)  # ou Image.BICUBIC
-
-    except FileNotFoundError:
-        img = Image.open("placeholder.jpg").convert("RGBA")
-        img = img.resize((50, 50), Image.LANCZOS)
-        # img = Image.new("RGB", (50, 50), color="gray")  # Image par défaut
-
-    # Créer un masque circulaire
-    mask = Image.new("L", (50, 50), 0)
-    draw = ImageDraw.Draw(mask)
-    draw.ellipse((1, 1, 49, 49), fill=255)  # Léger décalage pour éviter les bords durs
-
-    # Appliquer le masque pour arrondir l'image
-    img.putalpha(mask)
-
-    # Convertir en PhotoImage
-    photo = ImageTk.PhotoImage(img)
-    image_refs.append(photo)  # Garder une référence
-
-    item_frame = tk.Frame(scrollable_frame, padding=10)
-    item_frame.pack(fill="x")
-
-    label_img = tk.Label(item_frame, image=photo)
-    label_img.pack(side="left")
-
-    label_name = tk.Label(item_frame, text=contact["name"], font=("Helvetica", 14))
-    label_name.pack(side="left", padx=10)
-
+    afficher_contact(contact["name"], contact["image"])
 
 if __name__== "__main__":
     root.place_window_center()
