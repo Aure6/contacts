@@ -4,6 +4,7 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 import json
 import os
+import contacts_manager as cm
 
 # Créer la fenêtre principale
 root = tk.Window(
@@ -12,7 +13,6 @@ root = tk.Window(
     size=(600, 600)
 )
 
-contacts = []
 
 def afficher_contact(nom, chemin_image):
     try:
@@ -121,6 +121,8 @@ def charger_contacts():
 charger_contacts()
 contacts.sort(key=lambda c: c["name"].lower())
 
+################
+# créer l'interface
 # Conteneur principal
 frame = tk.Frame(root, padding=20)
 frame.pack(fill="both", expand=True)
