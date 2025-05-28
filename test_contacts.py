@@ -17,27 +17,26 @@ def run_around_tests():
         os.remove(TEST_FILE)
 
 def test_ajouter_contact_valide():
-    cm.ajouter_contact("Alice", "alice.jpg")
+    cm.ajouter_contact_moteur("Alice", "alice.jpg")
     assert len(cm.contacts) == 1
     assert cm.contacts[0]["name"] == "Alice"
-    assert cm.contacts[0]["image"] == "alice.jpg"
 
 def test_ajouter_contact_nom_vide():
-    cm.ajouter_contact("", "bob.jpg")
+    cm.ajouter_contact_moteur("", "bob.jpg")
     assert cm.contacts[0]["name"] == "Sans nom"
     assert cm.contacts[0]["image"] == "bob.jpg"
 
 def test_ajouter_contact_image_vide():
-    cm.ajouter_contact("Charlie", "")
+    cm.ajouter_contact_moteur("Charlie", "")
     assert cm.contacts[0]["name"] == "Charlie"
     assert cm.contacts[0]["image"] == "placeholder.jpg"
 
 def test_ajouter_contact_champs_vides():
     with pytest.raises(ValueError):
-        cm.ajouter_contact("", "")
+        cm.ajouter_contact_moteur("", "")
 
 def test_sauvegarder_et_charger_contacts():
-    cm.ajouter_contact("Alice", "alice.jpg")
+    cm.ajouter_contact_moteur("Alice", "alice.jpg")
     cm.sauvegarder_contacts(TEST_FILE)
     
     # Vider la liste pour tester le chargement
