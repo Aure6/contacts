@@ -13,8 +13,8 @@ def ajouter_contact_moteur(nom, image):
     contacts.append({"name": nom, "image": image})
     contacts.sort(key=lambda c: c["name"].lower())
 
-def sauvegarder_contacts():
-    with open("contacts.txt", "w", encoding="utf-8") as f:
+def sauvegarder_contacts(fichier="contacts.txt"):
+    with open(fichier, "w", encoding="utf-8") as f:
         json.dump(contacts, f, ensure_ascii=False, indent=4)
 
 def charger_contacts(fichier="contacts.txt"):
