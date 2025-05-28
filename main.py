@@ -2,6 +2,8 @@ import ttkbootstrap as tk
 from PIL import Image, ImageTk, ImageDraw
 import tkinter.filedialog as fd
 from tkinter import messagebox
+import json
+import os
 
 # Créer la fenêtre principale
 root = tk.Window(
@@ -9,6 +11,8 @@ root = tk.Window(
     themename="cosmo",
     size=(600, 600)
 )
+
+contacts = []
 
 def afficher_contact(nom, chemin_image):
     try:
@@ -70,14 +74,13 @@ def ouvrir_formulaire():
         image = entry_image.get().strip()
 
         if not nom and not image:
-            print("Veuillez remplir au moins un champ.")
+            messagebox.showwarning("Champs vides", "Veuillez remplir au moins un champ.")
             return
 
-        # Valeurs par défaut si un champ est vide
         # if not nom:
         #     nom = "Sans nom"
         if not image:
-            image = "placeholder.jpg"  # Image par défaut
+            image = "placeholder.jpg"
 
         # Ajouter à la liste et trier
         contacts.append({"name": nom, "image": image})
@@ -93,15 +96,30 @@ def ouvrir_formulaire():
 
         form.destroy()
 
+        sauvegarder_contacts()
+
     submit_btn = tk.Button(form, text="Ajouter", bootstyle="success", command=ajouter_contact)
     submit_btn.pack(pady=10)
 
-# Exemple de contacts avec image et nom
-contacts = [
-    {"name": "Alice", "image": "alice.jpg"},
-    {"name": "Bob", "image": "bob.jpg"},
-    {"name": "Charlie", "image": "charlie.jpg"},
-]
+def sauvegarder_contacts():
+    with open("contacts.txt", "w", encoding="utf-8") as f:
+        json.dump(contacts, f, ensure_ascii=False, indent=4)
+
+def charger_contacts():
+    global contacts
+    if os.path.exists("contacts.txt"):
+        with open("contacts.txt", "r", encoding="utf-8") as f:
+            contacts = json.load(f)
+    else:
+        # Liste par défaut si fichier absent
+        contacts = [
+            {"name": "Alice", "image": "alice.jpg"},
+            {"name": "Bob", "image": "bob.jpg"},
+            {"name": "Charlie", "image": "charlie.jpg"},
+        ]
+
+charger_contacts()
+contacts.sort(key=lambda c: c["name"].lower())
 
 # Conteneur principal
 frame = tk.Frame(root, padding=20)
