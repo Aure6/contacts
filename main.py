@@ -15,6 +15,7 @@ root = tk.Window(
 
 
 def afficher_contact(nom, chemin_image):
+    '''Graphic display of contacts.'''
     try:
         img = Image.open(chemin_image).convert("RGBA")
         img = img.resize((50, 50), Image.LANCZOS)
@@ -44,6 +45,7 @@ def afficher_contact(nom, chemin_image):
 
 # Formulaire ajout contact
 def ouvrir_formulaire():
+    '''Open a new window with a form to add a contact.'''
     form = tk.Toplevel(root)
     form.title("Ajouter un contact")
     form.geometry("300x200")
@@ -58,6 +60,7 @@ def ouvrir_formulaire():
     entry_image.pack()
 
     def parcourir_image():
+        '''Browse for an image file.'''
         filepath = fd.askopenfilename(
             title="Choisir une image",
             filetypes=[("Images", "*.jpg *.png *.jpeg *.gif")]
@@ -70,6 +73,7 @@ def ouvrir_formulaire():
     browse_btn.pack(pady=(5, 10))
 
     def ajouter_contact():
+        '''Process the form to add a contact and update the contacts list.'''
         nom = entry_nom.get().strip()
         image = entry_image.get().strip()
 
@@ -99,23 +103,6 @@ def ouvrir_formulaire():
 
     submit_btn = tk.Button(form, text="Ajouter", bootstyle="success", command=ajouter_contact)
     submit_btn.pack(pady=10)
-
-def sauvegarder_contacts():
-    with open("contacts.txt", "w", encoding="utf-8") as f:
-        json.dump(contacts, f, ensure_ascii=False, indent=4)
-
-def charger_contacts():
-    global contacts
-    if os.path.exists("contacts.txt"):
-        with open("contacts.txt", "r", encoding="utf-8") as f:
-            contacts = json.load(f)
-    else:
-        # Liste par défaut si fichier absent
-        contacts = [
-            {"name": "Alice", "image": "alice.jpg"},
-            {"name": "Bob", "image": "bob.jpg"},
-            {"name": "Charlie", "image": "charlie.jpg"},
-        ]
 
 cm.charger_contacts()
 cm.contacts.sort(key=lambda c: c["name"].lower())
