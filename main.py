@@ -55,21 +55,25 @@ def afficher_contact(nom, chemin_image):
 # Formulaire ajout contact
 def ouvrir_formulaire():
     '''Open a new window with a form to add a contact.'''
-    form = tk.Toplevel(root)
-    form.title("Ajouter un contact")
-    form.geometry("300x200")
-    form.resizable(False, False)
 
-    tk.Label(form, text="Nom :").pack(pady=(10, 0))
-    entry_nom = tk.Entry(form)
-    entry_nom.pack()
+    def check_image_exists(event=None):
+        """ 
+        Check if the path in the image entry field points to an existing file.
 
-    tk.Label(form, text="Image :").pack(pady=(10, 0))
-    entry_image = tk.Entry(form)
-    entry_image.pack()
+        This function is triggered either when the user types in the entry field or after a file is selected via the file dialog. It updates the status label to indicate whether the file exists.
+        """
+        path = entry_image.get()
+        if os.path.isfile(path):
+            label_status.config(text="✅ Image file found", bootstyle="success")
+        else:
+            label_status.config(text="❌ Image file not found", bootstyle="danger")
 
     def parcourir_image():
-        '''Browse for an image file.'''
+        """
+        Open a file dialog to allow the user to select an image file.
+
+        If a file is selected, its path is inserted into the entry field, and a check is performed to verify whether the file exists.
+        """
         filepath = fd.askopenfilename(
             title="Choisir une image",
             filetypes=[("Images", "*.jpg *.png *.jpeg *.gif")]
@@ -77,8 +81,35 @@ def ouvrir_formulaire():
         if filepath:
             entry_image.delete(0, "end")
             entry_image.insert(0, filepath)
+            check_image_exists()  # Call the check after selecting a file
 
-    browse_btn = tk.Button(form, text="Parcourir...", command=parcourir_image)
+    form = tk.Toplevel(root)
+    form.title("Ajouter un contact")
+    form.geometry("400x800")
+    form.resizable(False, False)
+
+    # Add a container frame
+    content = tk.Frame(form, padding=20)
+    content.pack(fill="both", expand=True)
+
+    tk.Label(content, text="Nom :").pack(pady=(10, 0))
+    entry_nom = tk.Entry(content)
+    entry_nom.pack()
+
+    tk.Label(content, text="Téléphone :").pack(pady=(10, 0))
+    entry_phone = tk.Entry(content)
+    entry_phone.pack()
+
+    tk.Label(content, text="Image :").pack(pady=(10, 0))
+    entry_image = tk.Entry(content)
+    entry_image.pack()
+    # Check on each key release
+    entry_image.bind("<KeyRelease>", check_image_exists)
+    # Status label to show the result
+    label_status = tk.Label(content, text="")
+    label_status.pack(pady=(5, 0))
+
+    browse_btn = tk.Button(content, text="Parcourir...", command=parcourir_image)
     browse_btn.pack(pady=(5, 10))
 
     def ajouter_contact():
@@ -92,6 +123,8 @@ def ouvrir_formulaire():
 
         if not image:
             image = "placeholder.jpg"
+
+        # TODO check if the path correctly leads to an image file
 
         try:
             cm.ajouter_contact_moteur(nom, image)
