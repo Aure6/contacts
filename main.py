@@ -49,11 +49,9 @@ def afficher_contact(nom, chemin_image, phone):
 
     if phone:
         tk.Label(item_frame, text="Téléphone: " + phone).pack(side="left")
-    # label_name = tk.Label(item_frame, text=phone)
-    # label_name.pack(side="left")
 
-     # Delete button
     def delete_contact():
+        """Delete the chosen contact"""
         if messagebox.askyesno("Confirmer la suppression", f"Supprimer le contact {nom}?"):
             cm.delete_contact_from_file(nom)  # Remove from JSON
             item_frame.destroy()  # Remove the contact's frame from the UI
