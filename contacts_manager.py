@@ -3,15 +3,15 @@ import os
 
 contacts = []
 
-def ajouter_contact_moteur(nom, image):
+def ajouter_contact_moteur(nom, image, phone):
     '''Check if at least one input is filled and add the new contact in the "contacts" variable.'''
-    if not nom and not image:
+    if not nom and not image and not phone:
         raise ValueError("Au moins un champ doit être rempli.")
     if not nom:
         nom = "Sans nom"
     if not image:
         image = "placeholder.jpg"
-    contacts.append({"name": nom, "image": image})
+    contacts.append({"name": nom, "phone": phone, "image": image})
     contacts.sort(key=lambda c: c["name"].lower())
 
 def sauvegarder_contacts(fichier="contacts.txt"):

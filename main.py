@@ -5,6 +5,7 @@ from tkinter import messagebox
 import json
 import os
 import contacts_manager as cm
+from tkinter import font
 
 # Créer la fenêtre principale
 root = tk.Window(
@@ -13,8 +14,11 @@ root = tk.Window(
     size=(600, 600)
 )
 
+# Modify default font globally
+default_font = font.nametofont("TkDefaultFont")
+default_font.configure(size=12)
 
-def afficher_contact(nom, chemin_image):
+def afficher_contact(nom, chemin_image, phone):
     '''Graphic display of contacts.'''
     try:
         img = Image.open(chemin_image).convert("RGBA")
@@ -43,14 +47,18 @@ def afficher_contact(nom, chemin_image):
     label_name = tk.Label(item_frame, text=nom, font=("Helvetica", 14))
     label_name.pack(side="left", padx=10)
 
+    tk.Label(item_frame, text="Téléphone: " + phone).pack(side="left", pady=(10, 0))
+    # label_name = tk.Label(item_frame, text=phone)
+    # label_name.pack(side="left")
+
      # Delete button
     def delete_contact():
-        if messagebox.askyesno("Confirm Deletion", f"Delete {nom}?"):
+        if messagebox.askyesno("Confirmer la suppression", f"Supprimer le contact {nom}?"):
             cm.delete_contact_from_file(nom)  # Remove from JSON
             item_frame.destroy()  # Remove the contact's frame from the UI
 
     delete_btn = tk.Button(item_frame, text="Delete", command=delete_contact,style="Danger.TButton")
-    delete_btn.pack(side="right", padx=5)
+    delete_btn.pack(side="left", padx=5)
 
 # Formulaire ajout contact
 def ouvrir_formulaire():
@@ -85,7 +93,7 @@ def ouvrir_formulaire():
 
     form = tk.Toplevel(root)
     form.title("Ajouter un contact")
-    form.geometry("400x800")
+    # form.geometry("400x800")
     form.resizable(False, False)
 
     # Add a container frame
@@ -116,8 +124,9 @@ def ouvrir_formulaire():
         '''Process the form to add a contact and update the contacts list.'''
         nom = entry_nom.get().strip()
         image = entry_image.get().strip()
+        phone = entry_phone.get().strip()
 
-        if not nom and not image:
+        if not nom and not image and not phone:
             messagebox.showwarning("Champs vides", "Veuillez remplir au moins un champ.")
             return
 
@@ -127,7 +136,7 @@ def ouvrir_formulaire():
         # TODO check if the path correctly leads to an image file
 
         try:
-            cm.ajouter_contact_moteur(nom, image)
+            cm.ajouter_contact_moteur(nom, image, phone)
         except ValueError as e:
             messagebox.showerror("Erreur", str(e))
             return
@@ -137,7 +146,7 @@ def ouvrir_formulaire():
             widget.destroy()
 
         for c in cm.contacts:
-            afficher_contact(c["name"], c["image"])
+            afficher_contact(c["name"], c["image"], c["phone"])
 
         form.destroy()
 
@@ -181,7 +190,7 @@ scrollbar.pack(side="right", fill="y")
 image_refs = []  # Pour éviter que les images soient supprimées par le garbage collector
 
 for contact in cm.contacts:
-    afficher_contact(contact["name"], contact["image"])
+    afficher_contact(contact["name"], contact["image"], contact["phone"])
 
 if __name__== "__main__":
     root.place_window_center()
