@@ -43,6 +43,15 @@ def afficher_contact(nom, chemin_image):
     label_name = tk.Label(item_frame, text=nom, font=("Helvetica", 14))
     label_name.pack(side="left", padx=10)
 
+     # Delete button
+    def delete_contact():
+        if messagebox.askyesno("Confirm Deletion", f"Delete {nom}?"):
+            cm.delete_contact_from_file(nom)  # Remove from JSON
+            item_frame.destroy()  # Remove the contact's frame from the UI
+
+    delete_btn = tk.Button(item_frame, text="Delete", command=delete_contact,style="Danger.TButton")
+    delete_btn.pack(side="right", padx=5)
+
 # Formulaire ajout contact
 def ouvrir_formulaire():
     '''Open a new window with a form to add a contact.'''

@@ -32,3 +32,23 @@ def charger_contacts(fichier="contacts.txt"):
         #     {"name": "Bob", "image": "bob.jpg"},
         #     {"name": "Charlie", "image": "charlie.jpg"},
         # ]
+
+def delete_contact_from_file(name):
+    """Delete a contact by name from the JSON file."""
+    CONTACTS_FILE = "contacts.txt"
+
+    if os.path.exists(CONTACTS_FILE):
+        with open(CONTACTS_FILE, "r", encoding="utf-8") as f:
+            try:
+                contacts = json.load(f)
+            except json.JSONDecodeError:
+                contacts = []
+    else:
+        contacts = []
+
+    # Filter out the contact by name
+    contacts = [c for c in contacts if c.get("name") != name]
+
+    # Save the updated contact list
+    with open(CONTACTS_FILE, "w", encoding="utf-8") as f:
+        json.dump(contacts, f, indent=4)
