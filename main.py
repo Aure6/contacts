@@ -47,7 +47,8 @@ def afficher_contact(nom, chemin_image, phone):
     label_name = tk.Label(item_frame, text=nom, font=("Helvetica", 14))
     label_name.pack(side="left", padx=10)
 
-    tk.Label(item_frame, text="Téléphone: " + phone).pack(side="left", pady=(10, 0))
+    if phone:
+        tk.Label(item_frame, text="Téléphone: " + phone).pack(side="left")
     # label_name = tk.Label(item_frame, text=phone)
     # label_name.pack(side="left")
 
@@ -57,8 +58,8 @@ def afficher_contact(nom, chemin_image, phone):
             cm.delete_contact_from_file(nom)  # Remove from JSON
             item_frame.destroy()  # Remove the contact's frame from the UI
 
-    delete_btn = tk.Button(item_frame, text="Delete", command=delete_contact,style="Danger.TButton")
-    delete_btn.pack(side="left", padx=5)
+    delete_btn = tk.Button(item_frame, text="Supprimer", command=delete_contact,style="Danger.TButton")
+    delete_btn.pack(side="left", padx=20)
 
 # Formulaire ajout contact
 def ouvrir_formulaire():
