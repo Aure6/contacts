@@ -19,30 +19,31 @@ def run_around_tests():
 
 def test_ajouter_contact_valide():
     """Test adding a valid contact"""
-    cm.ajouter_contact_moteur("Alice", "alice.jpg")
+    cm.ajouter_contact_moteur("Alice", "", "")
     assert len(cm.contacts) == 1
     assert cm.contacts[0]["name"] == "Alice"
 
 def test_ajouter_contact_nom_vide():
     """Test adding a contact with an empty name"""
-    cm.ajouter_contact_moteur("", "bob.jpg")
+    cm.ajouter_contact_moteur("", "", "04111111")
     assert cm.contacts[0]["name"] == "Sans nom"
-    assert cm.contacts[0]["image"] == "bob.jpg"
+    assert cm.contacts[0]["image"] == "placeholder.jpg"
+    assert cm.contacts[0]["phone"] == "04111111"
 
 def test_ajouter_contact_image_vide():
     """Test adding a contact with an empty image"""
-    cm.ajouter_contact_moteur("Charlie", "")
+    cm.ajouter_contact_moteur("Charlie", "", "")
     assert cm.contacts[0]["name"] == "Charlie"
     assert cm.contacts[0]["image"] == "placeholder.jpg"
 
 def test_ajouter_contact_champs_vides():
     """Test adding a contact with empty name and image"""
     with pytest.raises(ValueError):
-        cm.ajouter_contact_moteur("", "")
+        cm.ajouter_contact_moteur("", "", "")
 
 def test_sauvegarder_et_charger_contacts():
     """Test saving and loading contacts"""
-    cm.ajouter_contact_moteur("Alice", "alice.jpg")
+    cm.ajouter_contact_moteur("Alice", "", "")
     cm.sauvegarder_contacts(TEST_FILE)
     
     # Vider la liste pour tester le chargement
@@ -51,7 +52,7 @@ def test_sauvegarder_et_charger_contacts():
     
     assert len(cm.contacts) == 1
     assert cm.contacts[0]["name"] == "Alice"
-    assert cm.contacts[0]["image"] == "alice.jpg"
+    assert cm.contacts[0]["image"] == "placeholder.jpg"
 
 def test_charger_contacts_fichier_inexistant():
     """Test loading contacts from a non-existent file"""

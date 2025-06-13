@@ -1,5 +1,7 @@
 import json
+import shutil
 import os
+from PIL import Image, UnidentifiedImageError
 
 contacts = []
 
@@ -11,6 +13,26 @@ def ajouter_contact_moteur(nom, image, phone):
         nom = "Sans nom"
     if not image:
         image = "placeholder.jpg"
+    else:
+        # Check if the file exists
+        if not os.path.isfile(image):
+            raise FileNotFoundError(f"Le fichier image '{image}' n'existe pas.")
+
+        # Check if the file is a valid image
+        try:
+            with Image.open(image) as img:
+                img.verify()  # Verify it’s an image
+        except (UnidentifiedImageError, OSError):
+            raise ValueError(f"Le fichier '{image}' n'est pas une image valide.")
+
+        # Copy the image
+        dest_folder = "images"
+        os.makedirs(dest_folder, exist_ok=True)
+        image_name = os.path.basename(image)
+        copied_image_path = os.path.join(dest_folder, image_name)
+        shutil.copy(image, copied_image_path)
+        image = copied_image_path
+
     contacts.append({"name": nom, "phone": phone, "image": image})
     contacts.sort(key=lambda c: c["name"].lower())
 
