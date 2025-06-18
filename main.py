@@ -1,3 +1,7 @@
+"""
+__author__ = "Aurelien S"
+__version__ = "1.0"
+"""
 import ttkbootstrap as tk
 from PIL import Image, ImageTk, ImageDraw
 import tkinter.filedialog as fd

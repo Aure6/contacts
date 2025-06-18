@@ -1,3 +1,7 @@
+"""
+__author__ = "Aurelien S"
+__version__ = "1.0"
+"""
 import json
 import shutil
 import os
