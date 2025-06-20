@@ -7,7 +7,6 @@ import ttkbootstrap as tk
 from PIL import Image, ImageTk, ImageDraw
 import tkinter.filedialog as fd
 from tkinter import messagebox
-import json
 import os
 import contacts_manager as cm
 from tkinter import font

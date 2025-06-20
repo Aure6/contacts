@@ -3,7 +3,6 @@ __author__ = "Aurelien S"
 __version__ = "1.0"
 """
 import os
-import json
 import pytest
 import contacts_manager as cm
 
