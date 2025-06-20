@@ -52,7 +52,7 @@ def charger_contacts(fichier="contacts.txt"):
         with open(fichier, "r", encoding="utf-8") as f:
             contacts = json.load(f)
     else:
-        contacts = []  # vide si fichier absent
+        contacts = []  # empty if file not present
         # contacts = [
         #     {"name": "Alice", "image": "alice.jpg"},
         #     {"name": "Bob", "image": "bob.jpg"},

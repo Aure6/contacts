@@ -11,7 +11,7 @@ import os
 import contacts_manager as cm
 from tkinter import font
 
-# Créer la fenêtre principale
+# Create the main window
 root = tk.Window(
     title="Sample App",
     themename="cosmo",
@@ -63,7 +63,7 @@ def afficher_contact(nom, chemin_image, phone):
     delete_btn = tk.Button(item_frame, text="Supprimer", command=delete_contact,style="Danger.TButton")
     delete_btn.pack(side="left", padx=20)
 
-# Formulaire ajout contact
+# Add contact form
 def ouvrir_formulaire():
     '''Open a new window with a form to add a contact.'''
 
@@ -144,7 +144,7 @@ def ouvrir_formulaire():
             messagebox.showerror("Erreur", str(e))
             return
 
-        # Rafraîchir l'affichage de la liste
+        # Refresh list display
         for widget in scrollable_frame.winfo_children():
             widget.destroy()
 
@@ -162,16 +162,16 @@ cm.charger_contacts()
 cm.contacts.sort(key=lambda c: c["name"].lower())
 
 ################
-# créer l'interface
-# Conteneur principal
+# Create the UI
+# Main frame
 frame = tk.Frame(root, padding=20)
 frame.pack(fill="both", expand=True)
 
-# Bouton "Add"
+# "Add" button
 add_button = tk.Button(frame, text="Ajouter un contact", bootstyle="success", command=ouvrir_formulaire)
 add_button.pack(pady=(0, 10))
 
-# Créer un canvas pour pouvoir scroller la liste
+# Create a canvas to scroll the list
 canvas = tk.Canvas(frame)
 scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview)
 scrollable_frame = tk.Frame(canvas)
@@ -189,8 +189,8 @@ canvas.configure(yscrollcommand=scrollbar.set)
 canvas.pack(side="left", fill="both", expand=True)
 scrollbar.pack(side="right", fill="y")
 
-# Charger les images et les afficher
-image_refs = []  # Pour éviter que les images soient supprimées par le garbage collector
+# Load the images and show them
+image_refs = []  # To prevent images from being deleted by the garbage collector
 
 for contact in cm.contacts:
     afficher_contact(contact["name"], contact["image"], contact["phone"])
