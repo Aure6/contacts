@@ -1,4 +1,5 @@
 """
+Logiciel de gestion de contacts
 __author__ = "Aurelien S"
 __version__ = "1.0"
 """
